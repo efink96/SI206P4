@@ -6,6 +6,9 @@ import pygame
 # character will be on the ground the whole time (able to move horizontally), and they will catch as much fruit as possible in 60 seconds
 from pygame.locals import K_LEFT, K_RIGHT, K_SPACE, Rect
 
+LEFT, RIGHT = 0, 1
+START, STOP = 0, 1
+
 X_MAX = 600
 Y_MAX = 600
 
@@ -40,19 +43,18 @@ class Apple(pygame.sprite.Sprite):
 		self.velocity = 7
 
 	def update(self):
-		def update(self):
-        x, y = self.rect.center
+		x, y = self.rect.center
 
-        if y > Y_MAX:
-            x, y = random.randint(0, X_MAX), 0
-            self.velocity = 7
-        else:
-            x, y = x, y + self.velocity
+		if y > Y_MAX:
+			x, y = random.randint(0, X_MAX), 0
+			self.velocity = 7
+		else:
+			x, y = x, y + self.velocity
 
-        self.rect.center = x, y
+		self.rect.center = x, y
 
- 	def caught_in_basket(self):
- 		super(Apple, self).kill()
+	def caught_in_basket(self):
+		super(Apple, self).kill()
 
 class Banana(pygame.sprite.Sprite):
 	def __init__(self, y_pos):
@@ -65,18 +67,17 @@ class Banana(pygame.sprite.Sprite):
 		self.velocity = 7
 
 	def update(self):
-		def update(self):
-        x, y = self.rect.center
+		x, y = self.rect.center
 
-        if y > Y_MAX:
-            x, y = random.randint(0, X_MAX), 0
-            self.velocity = 7
-        else:
-            x, y = x, y + self.velocity
+		if y > Y_MAX:
+			x, y = random.randint(0, X_MAX), 0
+			self.velocity = 7
+		else:
+			x, y = x, y + self.velocity
 
-        self.rect.center = x, y
+		self.rect.center = x, y
 
- 	def caught_in_basket(self):
+	def caught_in_basket(self):
  		super(Banana, self).kill()
 
 class Carrot(pygame.sprite.Sprite):
@@ -90,16 +91,20 @@ class Carrot(pygame.sprite.Sprite):
 		self.velocity = 7
 
 	def update(self):
-		def update(self):
-        x, y = self.rect.center
+		x, y = self.rect.center
 
-        if y > Y_MAX:
-            x, y = random.randint(0, X_MAX), 0
-            self.velocity = 7
-        else:
-            x, y = x, y + self.velocity
+		if y > Y_MAX:
+			x, y = random.randint(0, X_MAX), 0
+			self.velocity = 7
+		else:
+			x, y = x, y + self.velocity
 
-        self.rect.center = x, y
+		self.rect.center = x, y
 
- 	def caught_in_basket(self):
- 		super(Carrot, self).kill()
+	def caught_in_basket(self):
+		super(Carrot, self).kill()
+
+
+def main():
+	game_over = False
+	screen = pygame.display.set_mode((X_MAX, Y_MAX), FULLSCREEN)
