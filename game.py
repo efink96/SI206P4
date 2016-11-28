@@ -145,7 +145,7 @@ def main():
 						basket.steer(LEFT, STOP)
 
 		catch_apple = pygame.sprite.spritecollide(basket, apples, True)
-		for i in catch_apple:
+		for i in catch_apple: 
 			basket.score += 10
 		for x, y in catch_apple.items():
 			y.caught_in_basket()
