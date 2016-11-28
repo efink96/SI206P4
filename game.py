@@ -4,7 +4,7 @@ import sys
 import pygame
 
 # character will be on the ground the whole time (able to move horizontally), and they will catch as much fruit as possible in 60 seconds
-from pygame.locals import K_LEFT, K_RIGHT, LEFT, RIGHT, KEYDOWN, KEYUP, Rect, FULLSCREEN, START, STOP, QUIT
+from pygame.locals import K_LEFT, K_RIGHT, KEYDOWN, KEYUP, Rect, FULLSCREEN, QUIT
 
 LEFT, RIGHT = 0, 1
 START, STOP = 0, 1
@@ -133,15 +133,15 @@ def main():
 
 		for event in pygame.event.get():
 			if not game_over:
-				if event.type = KEYDOWN:
-					if event.key = K_RIGHT:
+				if event.type == KEYDOWN:
+					if event.key == K_RIGHT:
 						basket.steer(RIGHT, START)
-					if event.key = K_LEFT:
+					if event.key == K_LEFT:
 						basket.steer(LEFT, START)
-				if event.type = KEYUP:
-					if event.key = K_RIGHT:
+				if event.type == KEYUP:
+					if event.key == K_RIGHT:
 						basket.steer(RIGHT, STOP)
-					if event.key = K_LEFT:
+					if event.key == K_LEFT:
 						basket.steer(LEFT, STOP)
 
 		catch_apple = pygame.sprite.spritecollide(basket, apples, True)
@@ -161,3 +161,12 @@ def main():
 			basket.score += 30
 		for x, y in catch_carrot.items():
 			y.caught_in_basket()
+
+
+	everything.clear(screen, empty)
+	everything.update()
+	everything.draw(screen)
+	pygame.display.flip()
+
+if __name__ == '__main__':
+	main()
