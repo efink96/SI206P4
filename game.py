@@ -4,7 +4,7 @@ import sys
 import pygame
 
 # character will be on the ground the whole time (able to move horizontally), and they will catch as much fruit as possible in 60 seconds
-from pygame.locals import K_LEFT, K_RIGHT, KEYDOWN, KEYUP, Rect, FULLSCREEN, QUIT
+from pygame.locals import K_LEFT, K_RIGHT, KEYDOWN, KEYUP, Rect, FULLSCREEN, QUIT, DOUBLEBUF
 
 LEFT, RIGHT = 0, 1
 START, STOP = 0, 1
@@ -33,7 +33,7 @@ class Basket(pygame.sprite.Sprite):
 				self.dx = 0
 
 class Apple(pygame.sprite.Sprite):
-	def __init__(self, x_pos):
+	def __init__(self, x_pos, groups):
 		super(Apple, self).__init__()
 		self.image = pygame.image.load("apple.png")
 		self.rect = self.image.get_rect()
@@ -57,7 +57,7 @@ class Apple(pygame.sprite.Sprite):
 		super(Apple, self).kill()
 
 class Banana(pygame.sprite.Sprite):
-	def __init__(self, x_pos):
+	def __init__(self, x_pos, groups):
 		super(Banana, self).__init__()
 		self.image = pygame.image.load("banana.png")
 		self.rect = self.image.get_rect()
@@ -81,7 +81,7 @@ class Banana(pygame.sprite.Sprite):
  		super(Banana, self).kill()
 
 class Carrot(pygame.sprite.Sprite):
-	def __init__(self, x_pos):
+	def __init__(self, x_pos, groups):
 		super(Carrot, self).__init__()
 		self.image = pygame.image.load("carrot.png")
 		self.rect = self.image.get_rect()
@@ -106,30 +106,38 @@ class Carrot(pygame.sprite.Sprite):
 
 
 def main():
+	print("here")
 	game_over = False
-	screen = pygame.display.set_mode((X_MAX, Y_MAX), FULLSCREEN)
+	screen = pygame.display.set_mode((X_MAX, Y_MAX), DOUBLEBUF)
 	time = pygame.time.Clock()
 
 	apples = pygame.sprite.Group()
 	bananas = pygame.sprite.Group()
 	carrots = pygame.sprite.Group()
 
-	basket = Basket(everything)
+	basket = Basket()
+
 
 	for i in range(5):
 		pos1 = random.randint(0, X_MAX)
-		Apple(pos1)
+		obj1 = Apple(pos1, everything)
+		apples.add(obj1)
 
 	for j in range(3):
 		pos2 = random.randint(0, X_MAX)
-		Banana(pos2)
+		obj2 = Banana(pos2, everything)
+		bananas.add(obj2)
 
 	for k in range(2):
 		pos3 = random.randint(0, X_MAX)
-		Carrot(pos3)
+		obj3 = Carrot(pos3, everything)
+		carrots.add(obj3)
 
 	while True:
-		clock.tick(30)
+		time.tick(30)
+		apples.draw(screen)
+		bananas.draw(screen)
+		carrots.draw(screen)
 
 		for event in pygame.event.get():
 			if not game_over:
@@ -147,21 +155,17 @@ def main():
 		catch_apple = pygame.sprite.spritecollide(basket, apples, True)
 		for i in catch_apple: 
 			basket.score += 10
-		for x, y in catch_apple.items():
-			y.caught_in_basket()
+			i.caught_in_basket()
 
 		catch_banana = pygame.sprite.spritecollide(basket, bananas, True)
 		for j in catch_banana:
 			basket.score += 20
-		for x, y in catch_banana.items():
-			y.caught_in_basket()
+			j.caught_in_basket()
 
 		catch_carrot = pygame.sprite.spritecollide(basket, carrots, True)
 		for k in catch_carrot:
 			basket.score += 30
-		for x, y in catch_carrot.items():
-			y.caught_in_basket()
-
+			k.caught_in_basket()
 
 	everything.clear(screen, empty)
 	everything.update()
