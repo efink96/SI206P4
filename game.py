@@ -22,6 +22,12 @@ class Basket(pygame.sprite.Sprite):
 		self.rect.center = (X_MAX/2, Y_MAX - 30)
 		self.dx = 0
 		self.dy = 0
+		self.score = 0
+		self.velocity = 10
+
+	def update(self):
+		x, y = self.rect.center
+		self.rect.center = x + self.dx, y + self.dy
 
 	def steer(self, direction, operation):
 		v = 10
@@ -37,7 +43,7 @@ class Apple(pygame.sprite.Sprite):
 		super(Apple, self).__init__()
 		self.image = pygame.image.load("apple.png")
 		self.rect = self.image.get_rect()
-		self.rect.center = (0, x_pos)
+		self.rect.center = (x_pos, 0)
 		self.dx = 0
 		self.dy = 0
 		self.velocity = 7
@@ -61,7 +67,7 @@ class Banana(pygame.sprite.Sprite):
 		super(Banana, self).__init__()
 		self.image = pygame.image.load("banana.png")
 		self.rect = self.image.get_rect()
-		self.rect.center = (0, x_pos)
+		self.rect.center = (x_pos, 0)
 		self.dx = 0
 		self.dy = 0
 		self.velocity = 7
@@ -85,7 +91,7 @@ class Carrot(pygame.sprite.Sprite):
 		super(Carrot, self).__init__()
 		self.image = pygame.image.load("carrot.png")
 		self.rect = self.image.get_rect()
-		self.rect.center = (0, x_pos)
+		self.rect.center = (x_pos, 0)
 		self.dx = 0
 		self.dy = 0
 		self.velocity = 7
@@ -106,22 +112,25 @@ class Carrot(pygame.sprite.Sprite):
 
 
 def main():
-	print("here")
+	
 	game_over = False
 	screen = pygame.display.set_mode((X_MAX, Y_MAX), DOUBLEBUF)
 	time = pygame.time.Clock()
 
+	basket = pygame.sprite.Group()
 	apples = pygame.sprite.Group()
 	bananas = pygame.sprite.Group()
 	carrots = pygame.sprite.Group()
 
-	basket = Basket()
+	bas = Basket()
+	basket.add(bas)
 
 
 	for i in range(5):
 		pos1 = random.randint(0, X_MAX)
 		obj1 = Apple(pos1, everything)
 		apples.add(obj1)
+
 
 	for j in range(3):
 		pos2 = random.randint(0, X_MAX)
@@ -138,39 +147,43 @@ def main():
 		apples.draw(screen)
 		bananas.draw(screen)
 		carrots.draw(screen)
+		basket.draw(screen)
 
 		for event in pygame.event.get():
 			if not game_over:
 				if event.type == KEYDOWN:
 					if event.key == K_RIGHT:
-						basket.steer(RIGHT, START)
+						bas.steer(RIGHT, START)
 					if event.key == K_LEFT:
-						basket.steer(LEFT, START)
+						bas.steer(LEFT, START)
 				if event.type == KEYUP:
 					if event.key == K_RIGHT:
-						basket.steer(RIGHT, STOP)
+						bas.steer(RIGHT, STOP)
 					if event.key == K_LEFT:
-						basket.steer(LEFT, STOP)
+						bas.steer(LEFT, STOP)
 
-		catch_apple = pygame.sprite.spritecollide(basket, apples, True)
-		for i in catch_apple: 
-			basket.score += 10
-			i.caught_in_basket()
+		apples.update()
+		bananas.update()
+		carrots.update()
+		basket.update()
+		#everything.draw(screen)
+		pygame.display.flip()
 
-		catch_banana = pygame.sprite.spritecollide(basket, bananas, True)
-		for j in catch_banana:
-			basket.score += 20
-			j.caught_in_basket()
+	catch_apple = pygame.sprite.spritecollide(basket, apples, True)
+	for i in catch_apple: 
+		bas.score += 10
+		i.caught_in_basket()
 
-		catch_carrot = pygame.sprite.spritecollide(basket, carrots, True)
-		for k in catch_carrot:
-			basket.score += 30
-			k.caught_in_basket()
+	catch_banana = pygame.sprite.spritecollide(basket, bananas, True)
+	for j in catch_banana:
+		bas.score += 20
+		j.caught_in_basket()
 
-	everything.clear(screen, empty)
-	everything.update()
-	everything.draw(screen)
-	pygame.display.flip()
+	catch_carrot = pygame.sprite.spritecollide(basket, carrots, True)
+	for k in catch_carrot:
+		bas.score += 30
+		k.caught_in_basket()
 
+		
 if __name__ == '__main__':
 	main()
