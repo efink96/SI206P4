@@ -116,6 +116,7 @@ def main():
 	game_over = False
 	screen = pygame.display.set_mode((X_MAX, Y_MAX), DOUBLEBUF)
 	time = pygame.time.Clock()
+	empty = pygame.Surface((X_MAX, Y_MAX))
 
 	basket = pygame.sprite.Group()
 	apples = pygame.sprite.Group()
@@ -126,28 +127,26 @@ def main():
 	basket.add(bas)
 
 
-	for i in range(5):
-		pos1 = random.randint(0, X_MAX)
-		obj1 = Apple(pos1, everything)
-		apples.add(obj1)
-
-
-	for j in range(3):
-		pos2 = random.randint(0, X_MAX)
-		obj2 = Banana(pos2, everything)
-		bananas.add(obj2)
-
-	for k in range(2):
-		pos3 = random.randint(0, X_MAX)
-		obj3 = Carrot(pos3, everything)
-		carrots.add(obj3)
-
+	
 	while True:
 		time.tick(30)
-		apples.draw(screen)
-		bananas.draw(screen)
-		carrots.draw(screen)
-		basket.draw(screen)
+		
+		for i in range(1):
+			pos1 = random.randint(0, X_MAX)
+			obj1 = Apple(pos1, everything)
+			apples.add(obj1)
+
+
+		for j in range(1):
+			pos2 = random.randint(0, X_MAX)
+			obj2 = Banana(pos2, everything)
+			bananas.add(obj2)
+
+		for k in range(1):
+			pos3 = random.randint(0, X_MAX)
+			obj3 = Carrot(pos3, everything)
+			carrots.add(obj3)
+
 
 		for event in pygame.event.get():
 			if not game_over:
@@ -162,27 +161,40 @@ def main():
 					if event.key == K_LEFT:
 						bas.steer(LEFT, STOP)
 
+		apples.clear(screen, empty)
+		bananas.clear(screen, empty)
+		carrots.clear(screen, empty)
+		basket.clear(screen, empty)
 		apples.update()
 		bananas.update()
 		carrots.update()
 		basket.update()
+
+		apples.draw(screen)
+		bananas.draw(screen)
+		carrots.draw(screen)
+		basket.draw(screen)
+		pygame.display.update()
 		#everything.draw(screen)
 		pygame.display.flip()
 
-	catch_apple = pygame.sprite.spritecollide(basket, apples, True)
-	for i in catch_apple: 
-		bas.score += 10
-		i.caught_in_basket()
+		catch_apple = pygame.sprite.groupcollide(basket, apples, False, True)
+		for k, v in catch_apple.items(): 
+			for i in v:
+				i.kill()
+				bas.score += 10
 
-	catch_banana = pygame.sprite.spritecollide(basket, bananas, True)
-	for j in catch_banana:
-		bas.score += 20
-		j.caught_in_basket()
+		catch_banana = pygame.sprite.groupcollide(basket, bananas, False, True)
+		for k, v in catch_banana.items(): 
+			for i in v:
+				i.kill()
+				bas.score += 20
 
-	catch_carrot = pygame.sprite.spritecollide(basket, carrots, True)
-	for k in catch_carrot:
-		bas.score += 30
-		k.caught_in_basket()
+		catch_carrot = pygame.sprite.groupcollide(basket, carrots, False, True)
+		for k, v in catch_carrot.items(): 
+			for i in v:
+				i.kill()
+				bas.score += 30
 
 		
 if __name__ == '__main__':
