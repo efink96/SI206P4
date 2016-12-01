@@ -4,7 +4,7 @@ import sys
 import pygame
 
 # character will be on the ground the whole time (able to move horizontally), and they will catch as much fruit as possible in 60 seconds
-from pygame.locals import K_LEFT, K_RIGHT, KEYDOWN, KEYUP, Rect, FULLSCREEN, QUIT, DOUBLEBUF
+from pygame.locals import K_LEFT, K_RIGHT, K_SPACE, KEYDOWN, KEYUP, Rect, FULLSCREEN, QUIT, DOUBLEBUF
 
 LEFT, RIGHT = 0, 1
 START, STOP = 0, 1
@@ -48,14 +48,14 @@ class Apple(pygame.sprite.Sprite):
 		self.rect.center = (x_pos, 0)
 		self.dx = 0
 		self.dy = 0
-		self.velocity = 7
+		self.velocity = 10
 
 	def update(self):
 		x, y = self.rect.center
 
 		if y > Y_MAX:
 			x, y = random.randint(0, X_MAX), 0
-			self.velocity = 7
+			self.velocity = 10
 		else:
 			x, y = x, y + self.velocity
 
@@ -73,14 +73,14 @@ class Banana(pygame.sprite.Sprite):
 		self.rect.center = (x_pos, 0)
 		self.dx = 0
 		self.dy = 0
-		self.velocity = 7
+		self.velocity = 12
 
 	def update(self):
 		x, y = self.rect.center
 
 		if y > Y_MAX:
 			x, y = random.randint(0, X_MAX), 0
-			self.velocity = 7
+			self.velocity = 12
 		else:
 			x, y = x, y + self.velocity
 
@@ -98,14 +98,14 @@ class Carrot(pygame.sprite.Sprite):
 		self.rect.center = (x_pos, 0)
 		self.dx = 0
 		self.dy = 0
-		self.velocity = 7
+		self.velocity = 15
 
 	def update(self):
 		x, y = self.rect.center
 
 		if y > Y_MAX:
 			x, y = random.randint(0, X_MAX), 0
-			self.velocity = 7
+			self.velocity = 15
 		else:
 			x, y = x, y + self.velocity
 
@@ -123,6 +123,7 @@ def main():
 	screen = pygame.display.set_mode((X_MAX, Y_MAX), DOUBLEBUF)
 	time = pygame.time.Clock()
 	empty = pygame.Surface((X_MAX, Y_MAX))
+	pygame.mixer.init()
 
 	basket = pygame.sprite.Group()
 	apples = pygame.sprite.Group()
@@ -131,27 +132,31 @@ def main():
 
 	bas = Basket()
 	basket.add(bas)
+
+	if pygame.mixer.get_init():
+		pygame.mixer.music.load("Caketown 1.mp3")
+		pygame.mixer.music.set_volume(0.8)
+		pygame.mixer.music.play(-1)
 	
+	
+	for i in range(10):
+		pos1 = random.randint(0, X_MAX)
+		obj1 = Apple(pos1, everything)
+		apples.add(obj1)
+
+
+	for j in range(5):
+		pos2 = random.randint(0, X_MAX)
+		obj2 = Banana(pos2, everything)
+		bananas.add(obj2)
+
+	for k in range(3):
+		pos3 = random.randint(0, X_MAX)
+		obj3 = Carrot(pos3, everything)
+		carrots.add(obj3)
+
 	while True:
 		time.tick(30)
-
-		for i in range(1):
-			pos1 = random.randint(0, X_MAX)
-			obj1 = Apple(pos1, everything)
-			apples.add(obj1)
-
-
-		for j in range(1):
-			pos2 = random.randint(0, X_MAX)
-			obj2 = Banana(pos2, everything)
-			bananas.add(obj2)
-
-		for k in range(1):
-			pos3 = random.randint(0, X_MAX)
-			obj3 = Carrot(pos3, everything)
-			carrots.add(obj3)
-
-
 		for event in pygame.event.get():
 			if not game_over:
 				if event.type == KEYDOWN:
@@ -164,6 +169,22 @@ def main():
 						bas.steer(RIGHT, STOP)
 					if event.key == K_LEFT:
 						bas.steer(LEFT, STOP)
+
+		if len(apples) < 10:
+			pos1 = random.randint(0, X_MAX)
+			obj1 = Apple(pos1, everything)
+			apples.add(obj1)
+
+		if len(bananas) < 5:
+			pos2 = random.randint(0, X_MAX)
+			obj2 = Banana(pos2, everything)
+			bananas.add(obj2)
+
+		if len(carrots) < 3:
+			pos3 = random.randint(0, X_MAX)
+			obj3 = Carrot(pos3, everything)
+			carrots.add(obj3)
+
 
 		apples.clear(screen, empty)
 		bananas.clear(screen, empty)
@@ -198,14 +219,24 @@ def main():
 		for k, v in catch_carrot.items(): 
 			for i in v:
 				i.kill()
-				bas.score -= 10
+				bas.score -= 100
 
-	if bas.score < 0:
-		game_over = True
+		score_counter = myfont.render("Score: {0}".format(bas.score), 1, (255, 255, 0))
+		screen.blit(score_counter, (0, Y_MAX-30))
 
-	if game_over:
-		label = myfont.render('Game Over', 1, (255,255,0))
-		screen.blit(label, (300, 300))
+		if bas.score < 0:
+			game_over = True
+
+		if bas.score > 1000:
+			game_over = True
+
+		if game_over:
+			label = myfont.render('Game Over. Press Space to Exit', 1, (255,255,0))
+			screen.blit(label, (200, 300))
+			if event.type == KEYDOWN:
+				if event.key == K_SPACE:
+					sys.exit()
+			
 
 		
 if __name__ == '__main__':
