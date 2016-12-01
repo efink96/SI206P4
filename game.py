@@ -18,6 +18,7 @@ class Basket(pygame.sprite.Sprite):
 	def __init__(self):
 		super(Basket, self).__init__()
 		self.image = pygame.image.load("basket.png")
+		self.image = pygame.transform.scale(self.image, (60,60))
 		self.rect = self.image.get_rect()
 		self.rect.center = (X_MAX/2, Y_MAX - 30)
 		self.dx = 0
@@ -42,6 +43,7 @@ class Apple(pygame.sprite.Sprite):
 	def __init__(self, x_pos, groups):
 		super(Apple, self).__init__()
 		self.image = pygame.image.load("apple.png")
+		self.image = pygame.transform.scale(self.image, (30,30))
 		self.rect = self.image.get_rect()
 		self.rect.center = (x_pos, 0)
 		self.dx = 0
@@ -66,6 +68,7 @@ class Banana(pygame.sprite.Sprite):
 	def __init__(self, x_pos, groups):
 		super(Banana, self).__init__()
 		self.image = pygame.image.load("banana.png")
+		self.image = pygame.transform.scale(self.image, (30,30))
 		self.rect = self.image.get_rect()
 		self.rect.center = (x_pos, 0)
 		self.dx = 0
@@ -90,6 +93,7 @@ class Carrot(pygame.sprite.Sprite):
 	def __init__(self, x_pos, groups):
 		super(Carrot, self).__init__()
 		self.image = pygame.image.load("carrot.png")
+		self.image = pygame.transform.scale(self.image, (30,30))
 		self.rect = self.image.get_rect()
 		self.rect.center = (x_pos, 0)
 		self.dx = 0
@@ -114,6 +118,8 @@ class Carrot(pygame.sprite.Sprite):
 def main():
 	
 	game_over = False
+	pygame.font.init()
+	myfont = pygame.font.Font(None, 25)
 	screen = pygame.display.set_mode((X_MAX, Y_MAX), DOUBLEBUF)
 	time = pygame.time.Clock()
 	empty = pygame.Surface((X_MAX, Y_MAX))
@@ -125,12 +131,10 @@ def main():
 
 	bas = Basket()
 	basket.add(bas)
-
-
 	
 	while True:
 		time.tick(30)
-		
+
 		for i in range(1):
 			pos1 = random.randint(0, X_MAX)
 			obj1 = Apple(pos1, everything)
@@ -194,7 +198,14 @@ def main():
 		for k, v in catch_carrot.items(): 
 			for i in v:
 				i.kill()
-				bas.score += 30
+				bas.score -= 10
+
+	if bas.score < 0:
+		game_over = True
+
+	if game_over:
+		label = myfont.render('Game Over', 1, (255,255,0))
+		screen.blit(label, (300, 300))
 
 		
 if __name__ == '__main__':
